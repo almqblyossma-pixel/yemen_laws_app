@@ -1,0 +1,29 @@
+workflows:
+  android-workflow:
+    name: Android Build
+    max_build_duration: 30
+    instance_type: mac_mini_m1
+    triggering:
+      events:
+        - push
+    scripts:
+      - name: Build Android APK
+        script: |
+          # فك ضغط ملف التطبيق أولاً لتتمكن المنصة من قراءته وبنائه
+          unzip -o yemen_laws_app.zip
+          cd yemen_laws_app || cd yemen_laws_app-master || true
+          
+          # أوامر بناء الأندرويد الأساسية (ستتحقق المنصة من طبيعة الكود تلقائياً)
+          if [ -f "pubspec.yaml" ]; then
+            flutter build apk --release
+          elif [ -f "gradlew" ]; then
+            chmod +x gradlew
+            ./gradlew assembleRelease
+          else
+            echo "No build system recognized. Please ensure code structure is correct."
+            exit 1
+          fi
+    artifacts:
+      - build/**/outputs/**/*.apk
+      - app/build/outputs/apk/**/*.apk
+
