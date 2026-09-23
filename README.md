@@ -1,28 +1,37 @@
 # Yemen Law
 
-This repository contains the Android Flutter project for the "قوانين اليمن – Yemen Law" app.
+This repository contains the Android Flutter project for the "قوانين اليمن – Yemen Law" application.
 
-## Project structure
+## How to run locally
 
-- `lib/main.dart` – app logic, screens, theming, local SQLite database, search, favorites, notes.
-- `android/` – Android configuration for building the APK.
-
-## Run locally
+1. Install Flutter SDK.
+2. Install Android Studio and Android SDK.
+3. In the project folder run:
 
 ```bash
 flutter pub get
 flutter run
 ```
 
-## Release APK
+## Build a release APK
 
 ```bash
 flutter build apk --release
 ```
 
+The APK will be generated at:
+
+```text
+build/app/outputs/flutter-apk/app-release.apk
+```
+
 ## Notes
 
-- Works fully offline for core legal content.
-- Local SQLite database stores laws, articles, favorites, notes, and recent reads.
-- Search supports Arabic text, law names, article numbers, and body matching.
-- Dark, light, and auto themes are supported.
+- The app is designed to work offline for the main legal content.
+- Local SQLite storage is used for laws, articles, favorites, notes, recent reads, and search.
+- The design follows the requested visual identity: dark charcoal, soft gold, legal and formal style.
+- This project is structured to support future expansion with more laws, references, court decisions, and legal templates.
+
+## Important
+
+This environment cannot build the APK directly, so the final APK must be generated on a machine with Flutter + Android SDK installed.
