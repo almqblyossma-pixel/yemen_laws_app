@@ -33,6 +33,13 @@ jobs:
           channel: stable
           cache: true
 
+      - name: Configure Flutter Android paths
+        run: |
+          mkdir -p android
+          echo "sdk.dir=$ANDROID_SDK_ROOT" > android/local.properties
+          echo "flutter.sdk=$(dirname $(dirname $(which flutter)))" >> android/local.properties
+          echo "flutter.buildMode=release" >> android/local.properties
+
       - name: Install Dependencies
         run: flutter pub get
 
