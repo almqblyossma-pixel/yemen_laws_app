@@ -1,29 +1,51 @@
-name: yemen_laws_app
-description: Yemen Law - Arabic offline legal reference app.
-publish_to: 'none'
+name: Build and Release Yemen Law APK
 
-version: 1.0.0+1
+on:
+  push:
+    branches:
+      - main
+      - master
+    tags:
+      - 'v*'
+  workflow_dispatch:
 
-environment:
-  sdk: '>=3.2.0 <4.0.0'
+jobs:
+  build:
+    runs-on: ubuntu-latest
 
-dependencies:
-  flutter:
-    sdk: flutter
-  cupertino_icons: ^1.0.0
-  sqflite: ^2.3.3
-  path: ^1.9.0
-  path_provider: ^2.1.0
-  shared_preferences: ^2.3.0
-  connectivity_plus: ^6.0.0
-  share_plus: ^10.0.0
-  fluttertoast: ^8.2.4
-  intl: ^0.19.0
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
-  flutter_lints: ^3.0.0
+      - name: Set up Java JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
 
-flutter:
-  uses-material-design: true
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.3'
+          channel: stable
+          cache: true
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Build Release APK
+        run: flutter build apk --release --no-tree-shake-icons
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: yemen-law-app-release
+          path: build/app/outputs/flutter-apk/app-release.apk
+
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: build/app/outputs/flutter-apk/app-release.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
