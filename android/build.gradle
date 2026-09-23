@@ -15,6 +15,3 @@ allprojects {
         mavenCentral()
     }
 }
-
-rootProject.name = "yemen_laws_app"
-include(":app")
