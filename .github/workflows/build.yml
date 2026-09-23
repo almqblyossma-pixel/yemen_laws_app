@@ -6,7 +6,7 @@ on:
       - main
       - master
     tags:
-      - "v*"
+      - 'v*'
   workflow_dispatch:
 
 permissions:
@@ -29,10 +29,10 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Install Android Build Tools
-        run: |
-          yes | sdkmanager --licenses
-          sdkmanager --install "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+      - name: Set up Android NDK
+        uses: nttld/setup-ndk@v1
+        with:
+          ndk-version: r25b
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
@@ -41,15 +41,11 @@ jobs:
           channel: stable
           cache: true
 
-      - name: Configure Flutter Android paths
-        run: |
-          mkdir -p android
-          echo "sdk.dir=$ANDROID_SDK_ROOT" > android/local.properties
-          echo "flutter.sdk=$(dirname $(dirname $(which flutter)))" >> android/local.properties
-          echo "flutter.buildMode=release" >> android/local.properties
-
       - name: Install Dependencies
         run: flutter pub get
+
+      - name: Accept Android Licenses
+        run: yes | flutter doctor --android-licenses || true
 
       - name: Build Release APK
         run: flutter build apk --release --no-tree-shake-icons
